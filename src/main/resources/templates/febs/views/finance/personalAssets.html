@@ -1,0 +1,91 @@
+<div class="layui-fluid layui-anim febs-anim" id="fbs_personalAssets" lay-title="个人资产">
+    <div class="layui-row febs-container">
+        <div class="layui-col-md12">
+            <div class="layui-card">
+                <div class="layui-card-body febs-table-full">
+                    <form class="layui-form layui-table-form" lay-filter="user-table-form">
+                        <div class="layui-row">
+                            <div class="layui-col-md10">
+                                <div class="layui-form-item">
+                                    <div class="layui-inline">
+                                        <label class="layui-form-label layui-form-label-sm">用户名</label>
+                                        <div class="layui-input-inline">
+                                            <input type="text" name="username" autocomplete="off" class="layui-input">
+                                        </div>
+                                    </div>
+                                    <div class="layui-inline">
+                                        <label class="layui-form-label layui-form-label-sm">创建时间</label>
+                                        <div class="layui-input-inline">
+                                            <input type="text" name="time" id="user-createTime" class="layui-input">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                    <table lay-filter="userTable" lay-data="{id: 'userTable'}"></table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script data-th-inline="none" type="text/javascript">
+    layui.use(['dropdown', 'jquery', 'laydate', 'form', 'table', 'febs', 'treeSelect'], function () {
+        var $ = layui.jquery,
+            laydate = layui.laydate,
+            febs = layui.febs,
+            form = layui.form,
+            $view = $('#fbs_personalAssets'),
+            $searchForm = $view.find('form'),
+            sortObject = {field: 'createTime', type: null},
+            tableIns,
+            createTimeFrom,
+            createTimeTo;
+
+        form.render();
+
+        initTable();
+
+        laydate.render({
+            elem: '#user-createTime',
+            range: true,
+            trigger: 'click'
+        });
+
+
+        $query.on('click', function () {
+            var params = $.extend(getQueryParams(), {field: sortObject.field, order: sortObject.type});
+            tableIns.reload({where: params, page: {curr: 1}});
+        });
+
+        function initTable() {
+            tableIns = febs.table.init({
+                elem: $view.find('table'),
+                id: 'userTable',
+                url: ctx + 'personalAssets/list',
+                cols: [[
+                    {field: 'totalMoney', title: '总金额', minWidth: 100},
+                    {field: 'gongjijing', title: '公积金'},
+                    {field: 'hairdresserStock', title: '理发店股份', minWidth: 165},
+                    {field: 'arrears', title: '星星欠款', minWidth: 180},
+                    {field: 'consume', title: '消费', minWidth: 180},
+                    {field: 'hairdresserBonus', title: '理发店分红', minWidth: 180},
+                    {field: 'time', title: '时间', minWidth: 180, sort: true}
+                ]]
+            });
+        }
+
+        function getQueryParams() {
+            var params = $searchForm.serializeJson();
+            var createTime = params.time;
+            if (createTime) {
+                createTimeFrom = createTime.split(' - ')[0];
+                createTimeTo = createTime.split(' - ')[1];
+            }
+            params.invalidate_ie_cache = new Date();
+            params.createTimeFrom = createTimeFrom;
+            params.createTimeTo = createTimeTo;
+            return params;
+        }
+    })
+</script>
