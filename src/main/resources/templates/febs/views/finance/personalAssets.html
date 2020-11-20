@@ -8,15 +8,14 @@
                             <div class="layui-col-md10">
                                 <div class="layui-form-item">
                                     <div class="layui-inline">
-                                        <label class="layui-form-label layui-form-label-sm">用户名</label>
+                                        <label class="layui-form-label layui-form-label-sm">选择时间</label>
                                         <div class="layui-input-inline">
-                                            <input type="text" name="username" autocomplete="off" class="layui-input">
+                                            <input type="text" name="time" id="user-createTime" class="layui-input">
                                         </div>
                                     </div>
                                     <div class="layui-inline">
-                                        <label class="layui-form-label layui-form-label-sm">创建时间</label>
-                                        <div class="layui-input-inline">
-                                            <input type="text" name="time" id="user-createTime" class="layui-input">
+                                        <div class="layui-btn layui-btn-sm layui-btn-primary febs-button-blue-plain table-action" id="query">
+                                            <i class="layui-icon">&#xe848;</i>
                                         </div>
                                     </div>
                                 </div>
@@ -36,11 +35,10 @@
             febs = layui.febs,
             form = layui.form,
             $view = $('#fbs_personalAssets'),
+            $query = $view.find('#query'),
             $searchForm = $view.find('form'),
             sortObject = {field: 'createTime', type: null},
-            tableIns,
-            createTimeFrom,
-            createTimeTo;
+            tableIns;
 
         form.render();
 
@@ -48,10 +46,9 @@
 
         laydate.render({
             elem: '#user-createTime',
-            range: true,
+            range: false,
             trigger: 'click'
         });
-
 
         $query.on('click', function () {
             var params = $.extend(getQueryParams(), {field: sortObject.field, order: sortObject.type});
@@ -64,27 +61,19 @@
                 id: 'userTable',
                 url: ctx + 'personalAssets/list',
                 cols: [[
-                    {field: 'date', title: '时间', minWidth: 180, sort: true},
-                    {field: 'totalMoney', title: '总金额(万)', minWidth: 100},
+                    {field: 'date', title: '时间', sort: true},
+                    {field: 'totalMoney', title: '总金额(万)'},
                     {field: 'gongJiJing', title: '公积金(万)'},
-                    {field: 'hairdresserStock', title: '理发店股份(万)', minWidth: 165},
-                    {field: 'arrears', title: '星星欠款(万)', minWidth: 180},
-                    {field: 'consume', title: '消费(万)', minWidth: 180},
-                    {field: 'hairdresserBonus', title: '理发店分红(万)', minWidth: 180}
+                    {field: 'hairdresserStock', title: '理发店股份(万)'},
+                    {field: 'arrears', title: '星星欠款(万)'},
+                    {field: 'consume', title: '消费(万)'},
+                    {field: 'hairdresserBonus', title: '理发店分红(万)'}
                 ]]
             });
         }
 
         function getQueryParams() {
             var params = $searchForm.serializeJson();
-            var createTime = params.time;
-            if (createTime) {
-                createTimeFrom = createTime.split(' - ')[0];
-                createTimeTo = createTime.split(' - ')[1];
-            }
-            params.invalidate_ie_cache = new Date();
-            params.createTimeFrom = createTimeFrom;
-            params.createTimeTo = createTimeTo;
             return params;
         }
     })

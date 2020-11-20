@@ -11,7 +11,9 @@ package cc.mrbird.febs.finance;
 import cc.mrbird.febs.common.controller.BaseController;
 import cc.mrbird.febs.common.entity.FebsResponse;
 import cc.mrbird.febs.finance.mapper.PersonalAssetsMapper;
+import cc.mrbird.febs.system.entity.Dept;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -34,9 +36,12 @@ public class personalAssetsController  extends BaseController {
     private PersonalAssetsMapper personalAssetsMapper;
 
     @GetMapping("list")
-    public FebsResponse userList() {
+    public FebsResponse userList(String time) {
         Map<String, Object> dataTable =new HashMap();
         QueryWrapper<PersonalAssets> queryWrapper = new QueryWrapper<>();
+        if (StringUtils.isNotBlank(time)) {
+            queryWrapper.lambda().eq(PersonalAssets::getDate, time);
+        }
         List<PersonalAssets> list=personalAssetsMapper.selectList(queryWrapper);
         list.forEach(x->{
             x.setTotalMoney(x.getTotalMoney()/10000);
