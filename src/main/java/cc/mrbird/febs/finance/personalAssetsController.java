@@ -38,6 +38,14 @@ public class personalAssetsController  extends BaseController {
         Map<String, Object> dataTable =new HashMap();
         QueryWrapper<PersonalAssets> queryWrapper = new QueryWrapper<>();
         List<PersonalAssets> list=personalAssetsMapper.selectList(queryWrapper);
+        list.forEach(x->{
+            x.setTotalMoney(x.getTotalMoney()/10000);
+            x.setGongJiJing(x.getGongJiJing()/10000);
+            x.setHairdresserStock(x.getHairdresserStock()/10000);
+            x.setArrears(x.getArrears()/10000);
+            x.setConsume(x.getConsume()/10000);
+            x.setHairdresserBonus(x.getHairdresserBonus()/10000);
+        });
         dataTable.put("rows", list);
         dataTable.put("total", 1);
         return new FebsResponse().success().data(dataTable);

@@ -19,22 +19,22 @@ public class PersonalAssets  implements Serializable {
     private String date;
 
     @TableField("total_money")
-    private String totalMoney;
+    private Double totalMoney;
 
     @TableField("gong_ji_jing")
-    private String gongJiJing;
+    private Double gongJiJing;
 
     @TableField("hairdresser_stock")
-    private String hairdresserStock;
+    private Double hairdresserStock;
 
     @TableField("arrears")
-    private String arrears;
+    private Double arrears;
 
     @TableField("consume")
-    private String consume;
+    private Double consume;
 
     @TableField("hairdresser_bonus")
-    private String hairdresserBonus;
+    private Double hairdresserBonus;
 
     @TableField("create_time")
     private String createTime;
