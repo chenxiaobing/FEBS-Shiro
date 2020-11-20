@@ -50,6 +50,7 @@ public class personalAssetsController  extends BaseController {
             x.setArrears(x.getArrears()/10000);
             x.setConsume(x.getConsume()/10000);
             x.setHairdresserBonus(x.getHairdresserBonus()/10000);
+            x.setCarLoan(x.getCarLoan()/10000);
         });
         dataTable.put("rows", list);
         dataTable.put("total", 1);

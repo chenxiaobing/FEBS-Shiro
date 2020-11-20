@@ -36,6 +36,9 @@ public class PersonalAssets  implements Serializable {
     @TableField("hairdresser_bonus")
     private Double hairdresserBonus;
 
+    @TableField("car_loan")
+    private Double carLoan;
+
     @TableField("create_time")
     private String createTime;
 

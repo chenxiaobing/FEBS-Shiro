@@ -61,13 +61,14 @@
                 id: 'userTable',
                 url: ctx + 'personalAssets/list',
                 cols: [[
-                    {field: 'date', title: '时间', sort: true},
-                    {field: 'totalMoney', title: '总金额(万)'},
-                    {field: 'gongJiJing', title: '公积金(万)'},
-                    {field: 'hairdresserStock', title: '理发店股份(万)'},
-                    {field: 'arrears', title: '星星欠款(万)'},
-                    {field: 'consume', title: '消费(万)'},
-                    {field: 'hairdresserBonus', title: '理发店分红(万)'}
+                    {field: 'date', title: '时间',minWidth: 150},
+                    {field: 'totalMoney', title: '总金额(万)',minWidth: 100},
+                    {field: 'gongJiJing', title: '公积金(万)',minWidth: 100},
+                    {field: 'hairdresserStock', title: '理发店股份(万)',minWidth: 150},
+                    {field: 'arrears', title: '星星欠款(万)',minWidth: 150},
+                    {field: 'consume', title: '消费(万)',minWidth: 100},
+                    {field: 'hairdresserBonus', title: '理发店分红(万)',minWidth: 150},
+                    {field: 'carLoan', title: '车贷(万)',minWidth: 150}
                 ]]
             });
         }
