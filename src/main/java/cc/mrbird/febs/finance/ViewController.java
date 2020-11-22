@@ -15,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
@@ -31,5 +32,10 @@ public class ViewController extends BaseController {
     @GetMapping("personalAssets")
     public String online() {
         return FebsUtil.view("finance/personalAssets");
+    }
+
+    @GetMapping("assetsAdd/{id}")
+    public String assetsAdd(@PathVariable String id) {
+        return FebsUtil.view("finance/assetsAdd");
     }
 }

@@ -7,6 +7,8 @@ import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.session.Session;
 import org.apache.shiro.subject.Subject;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -44,6 +46,13 @@ public class BaseController {
         data.put("rows", pageInfo.getRecords());
         data.put("total", pageInfo.getTotal());
         return data;
+    }
+
+    protected String getCurrentTime(){
+        Date currentTime = new Date();
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd  HH:mm:ss");
+        String dateString = formatter.format(currentTime);
+        return dateString;
     }
 
 }

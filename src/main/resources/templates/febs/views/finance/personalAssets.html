@@ -5,7 +5,7 @@
                 <div class="layui-card-body febs-table-full">
                     <form class="layui-form layui-table-form" lay-filter="user-table-form">
                         <div class="layui-row">
-                            <div class="layui-col-md10">
+                            <div class="layui-col-md4">
                                 <div class="layui-form-item">
                                     <div class="layui-inline">
                                         <label class="layui-form-label layui-form-label-sm">选择时间</label>
@@ -13,11 +13,14 @@
                                             <input type="text" name="time" id="user-createTime" class="layui-input">
                                         </div>
                                     </div>
-                                    <div class="layui-inline">
-                                        <div class="layui-btn layui-btn-sm layui-btn-primary febs-button-blue-plain table-action" id="query">
-                                            <i class="layui-icon">&#xe848;</i>
-                                        </div>
-                                    </div>
+                                </div>
+                            </div>
+                            <div class="layui-col-md8 layui-col-sm18 layui-col-xs18 table-action-area">
+                                <div class="layui-btn layui-btn-sm layui-btn-primary febs-button-blue-plain table-action" id="query">
+                                    <i class="layui-icon">&#xe848;</i>
+                                </div>
+                                <div class="layui-btn layui-btn-sm layui-btn-primary table-action action-more">
+                                    <i class="layui-icon">&#xe875;</i>
                                 </div>
                             </div>
                         </div>
@@ -28,12 +31,21 @@
         </div>
     </div>
 </div>
+<script type="text/html" id="assets-option">
+    <a lay-event="detail"><i
+            class="layui-icon febs-edit-area febs-green">&#xe7a5;</i></a>
+    <a lay-event="edit"><i
+            class="layui-icon febs-edit-area febs-blue">&#xe7a4;</i></a>
+    <a lay-event="del"><i class="layui-icon febs-edit-area febs-red">&#xe7f9;</i></a>
+</script>
 <script data-th-inline="none" type="text/javascript">
     layui.use(['dropdown', 'jquery', 'laydate', 'form', 'table', 'febs', 'treeSelect'], function () {
         var $ = layui.jquery,
             laydate = layui.laydate,
             febs = layui.febs,
             form = layui.form,
+            dropdown = layui.dropdown,
+            table = layui.table,
             $view = $('#fbs_personalAssets'),
             $query = $view.find('#query'),
             $searchForm = $view.find('form'),
@@ -48,6 +60,58 @@
             elem: '#user-createTime',
             range: false,
             trigger: 'click'
+        });
+
+        dropdown.render({
+            elem: $view.find('.action-more'),
+            click: function (name, elem, event) {
+                if (name === 'add') {
+                    febs.modal.open('资产', 'finance/assetsAdd/-1', {
+                        btn: ['提交', '重置'],
+                        area: $(window).width() <= 750 ? '95%' : '50%',
+                        offset: '30px',
+                        yes: function (index, layero) {
+                            $('#assets-add').find('#submit').trigger('click');
+                        },
+                        btn2: function () {
+                            $('#assets-add').find('#reset').trigger('click');
+                            return false;
+                        }
+                    });
+                }
+            },
+            options: [{
+                name: 'add',
+                title: '新增资产'
+            }]
+        });
+
+        table.on('tool(userTable)', function (obj) {
+            var data = obj.data,
+                layEvent = obj.event;
+            if (layEvent === 'detail') {
+                febs.modal.view('资产详细信息', 'finance/assetsAdd/' + data.id, {
+                    area: $(window).width() <= 750 ? '95%' : '660px'
+                });
+            }
+            if (layEvent === 'del') {
+                febs.modal.confirm('删除资产', '确定删除该资产？', function () {
+                    deleteUsers(data.id);
+                });
+            }
+            if (layEvent === 'edit') {
+                febs.modal.open('修改资产', 'finance/assetsAdd/' + data.id, {
+                    area: $(window).width() <= 750 ? '90%' : '50%',
+                    offset: '30px',
+                    btn: ['提交', '取消'],
+                    yes: function (index, layero) {
+                        $('#user-update').find('#submit').trigger('click');
+                    },
+                    btn2: function () {
+                        layer.closeAll();
+                    }
+                });
+            }
         });
 
         $query.on('click', function () {
@@ -68,7 +132,8 @@
                     {field: 'arrears', title: '星星欠款(万)',minWidth: 150},
                     {field: 'consume', title: '消费(万)',minWidth: 100},
                     {field: 'hairdresserBonus', title: '理发店分红(万)',minWidth: 150},
-                    {field: 'carLoan', title: '车贷(万)',minWidth: 150}
+                    {field: 'carLoan', title: '车贷(万)',minWidth: 150},
+                    {title: '操作', toolbar: '#assets-option', minWidth: 140}
                 ]]
             });
         }

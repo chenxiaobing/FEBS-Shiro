@@ -11,13 +11,12 @@ package cc.mrbird.febs.finance;
 import cc.mrbird.febs.common.controller.BaseController;
 import cc.mrbird.febs.common.entity.FebsResponse;
 import cc.mrbird.febs.finance.mapper.PersonalAssetsMapper;
-import cc.mrbird.febs.system.entity.Dept;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -55,5 +54,22 @@ public class personalAssetsController  extends BaseController {
         dataTable.put("rows", list);
         dataTable.put("total", 1);
         return new FebsResponse().success().data(dataTable);
+    }
+
+    @PostMapping("add")
+    public FebsResponse add(@Valid PersonalAssets assets) {
+        QueryWrapper<PersonalAssets> queryWrapper = new QueryWrapper<>();
+        if (StringUtils.isNotBlank(assets.getDate())) {
+            queryWrapper.lambda().eq(PersonalAssets::getDate, assets.getDate());
+            List<PersonalAssets> list=personalAssetsMapper.selectList(queryWrapper);
+            if (list != null && list.size() > 0) {
+                return new FebsResponse().fail().message("已经存在");
+            }
+        }
+        String date=getCurrentTime();
+        assets.setCreateTime(date);
+        assets.setUpdateTime(date);
+        this.personalAssetsMapper.insert(assets);
+        return new FebsResponse().success();
     }
 }
