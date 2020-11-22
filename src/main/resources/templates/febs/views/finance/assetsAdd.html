@@ -23,7 +23,7 @@
     }
 </style>
 <div class="layui-fluid" id="assets-add">
-    <form class="layui-form" action="">
+    <form class="layui-form" action=""  lay-filter="assets-form">
         <div class="layui-form-item">
             <label class="layui-form-label  febs-form-item-require layui-form-label-sm">选择时间：</label>
             <div class="layui-input-inline">
@@ -85,12 +85,14 @@
             laydate = layui.laydate,
             layer = layui.layer,
             form = layui.form,
+            assets = [[${assets}]],
             dropdown = layui.dropdown,
             $view = $('#assets-add'),
             validate = layui.validate;
 
         form.verify(validate);
         form.render();
+        initUserValue();
         laydate.render({
             elem: '#user-createTime',
             range: false,
@@ -104,5 +106,17 @@
             });
             return false;
         });
+        function initUserValue() {
+            form.val("assets-form", {
+                "date": assets.date,
+                "totalMoney": assets.totalMoney,
+                "gongJiJing": assets.gongJiJing,
+                "hairdresserStock": assets.hairdresserStock,
+                "arrears": assets.arrears,
+                "consume": assets.consume,
+                "hairdresserBonus": assets.hairdresserBonus,
+                "carLoan": assets.carLoan
+            });
+        }
     });
 </script>
