@@ -10,8 +10,12 @@ package cc.mrbird.febs.finance;
 
 import cc.mrbird.febs.common.controller.BaseController;
 import cc.mrbird.febs.common.entity.FebsResponse;
+import cc.mrbird.febs.common.entity.QueryRequest;
 import cc.mrbird.febs.finance.mapper.PersonalAssetsMapper;
+import cc.mrbird.febs.system.entity.User;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -35,13 +39,16 @@ public class personalAssetsController  extends BaseController {
     private PersonalAssetsMapper personalAssetsMapper;
 
     @GetMapping("list")
-    public FebsResponse userList(String time) {
+    public FebsResponse userList(String time, QueryRequest request) {
         Map<String, Object> dataTable =new HashMap();
         QueryWrapper<PersonalAssets> queryWrapper = new QueryWrapper<>();
         if (StringUtils.isNotBlank(time)) {
             queryWrapper.lambda().eq(PersonalAssets::getDate, time);
         }
-        List<PersonalAssets> list=personalAssetsMapper.selectList(queryWrapper);
+        Page<PersonalAssets> page = new Page<>(request.getPageNum(), request.getPageSize());
+        IPage<PersonalAssets> pageResult = personalAssetsMapper.selectPage(page,queryWrapper);
+
+        List<PersonalAssets> list=pageResult.getRecords();
         list.forEach(x->{
             x.setTotalMoney(x.getTotalMoney()/10000);
             x.setGongJiJing(x.getGongJiJing()/10000);
@@ -52,7 +59,7 @@ public class personalAssetsController  extends BaseController {
             x.setCarLoan(x.getCarLoan()/10000);
         });
         dataTable.put("rows", list);
-        dataTable.put("total", 1);
+        dataTable.put("total", pageResult.getTotal());
         return new FebsResponse().success().data(dataTable);
     }
 
