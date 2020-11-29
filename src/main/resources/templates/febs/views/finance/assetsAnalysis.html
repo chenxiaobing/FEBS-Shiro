@@ -1,0 +1,121 @@
+<style>
+    #febs-apex-line .layui-card-header {
+        font-weight: 600;
+    }
+</style>
+<div class="layui-fluid layui-anim febs-anim" id="fbs_assetsAnalysis" lay-title="资产分析">
+    <div class="layui-row febs-container">
+        <div class="layui-col-md12  layui-col-sm12 layui-col-xs12">
+            <div class="layui-card">
+                <div class="layui-card-body febs-table-full">
+                    <form class="layui-form layui-table-form" lay-filter="Analysis-table-form">
+                        <div class="layui-row">
+                            <div class="layui-col-md12">
+                                <div class="layui-form-item">
+                                    <div class="layui-inline">
+                                        <label class="layui-form-label layui-form-label-sm">分析项目</label>
+                                            <div class="layui-input-inline">
+                                                <select name="assetsItem" id="assetsItem" lay-filter="assetsItem">
+                                                    <option value=""></option>
+                                                    <option value="totalMoney">总金额</option>
+                                                    <option value="gongJiJing">公积金</option>
+                                                    <option value="hairdresserStock">理发店股份</option>
+                                                    <option value="arrears">星星欠款</option>
+                                                    <option value="consume">消费</option>
+                                                    <option value="hairdresserBonus">理发店分红</option>
+                                                </select>
+                                            </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="layui-card">
+                <div class="layui-card-header">资产趋势图</div>
+                <div class="layui-card-body">
+                    <div id="basicLineChart"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script data-th-src="@{febs/lay/data/dataSeries.js}"></script>
+<script data-th-inline="javascript" type="text/javascript">
+    layui.use(['apexcharts','dropdown', 'jquery', 'form', 'febs'], function () {
+        var $ = layui.jquery,
+            febs = layui.febs,
+            dropdown = layui.dropdown,
+            form = layui.form,
+            $view = $('#fbs_personalAnalysis'),
+            $searchForm = $view.find('form');
+
+        form.render();
+
+        form.on('select(assetsItem)', function (itemType) {
+                handleSuccess(itemType.value);
+        });
+
+        $("#assetsItem").val("totalMoney");
+        layui.form.render('select');
+        handleSuccess("totalMoney");
+
+        function handleSuccess(valueType) {
+            febs.get(ctx + 'personalAssets/dates/'+valueType, null, function (r) {
+                let days = [];
+                let moneyCount = [];
+                layui.each(r.data.assets, function (key, item) {
+                    days.push(item.date);
+                    moneyCount.push(item.value);
+                });
+
+                var basicLineChartOptions = {
+                    chart: {
+                        height: 400,
+                        type: 'line',
+                        zoom: {
+                            enabled: false
+                        },
+                        toolbar: {
+                            show: false
+                        }
+                    },
+                    dataLabels: {
+                        enabled: false
+                    },
+                    colors: ['#0acf97'],
+                    stroke: {
+                        width: 2,
+                        curve: 'straight'
+                    },
+                    series: [{
+                        name: "金额(万)",
+                        data:moneyCount
+                        /*data: [10, 41, 35, 51, 49, 62, 69, 91, 148]*/
+                    }],
+                    title: {
+                        text: '月曲线',
+                        align: 'left'
+                    },
+                    grid: {
+                        row: {
+                            colors: ['transparent', 'transparent'],
+                            opacity: 0.2
+                        },
+                        borderColor: '#f1f3fa'
+                    },
+                    xaxis: {
+                        categories: days
+                        /*categories: ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月']*/
+                    }
+                };
+
+                new ApexCharts(
+                    document.querySelector("#basicLineChart"),
+                    basicLineChartOptions
+                ).render();
+            });
+        }
+    })
+</script>

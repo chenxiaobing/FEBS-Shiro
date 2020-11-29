@@ -22,12 +22,18 @@
         overflow: visible !important;
     }
 </style>
-<div class="layui-fluid" id="assets-add">
+<div class="layui-fluid" id="assets-modify">
     <form class="layui-form" action=""  lay-filter="assets-form">
+        <div class="layui-form-item febs-hide">
+            <label class="layui-form-label febs-form-item-require">资产id：</label>
+            <div class="layui-input-block">
+                <input type="text" name="id">
+            </div>
+        </div>
         <div class="layui-form-item">
-            <label class="layui-form-label  febs-form-item-require layui-form-label-sm">选择时间：</label>
+            <label class="layui-form-label  febs-form-item-require layui-form-label-sm">时间：</label>
             <div class="layui-input-inline">
-                <input type="text" name="date" id="user-createTime" class="layui-input">
+                <input type="text" readonly="true" name="date" id="user-createTime" class="layui-input">
             </div>
         </div>
         <div class="layui-form-item">
@@ -78,35 +84,37 @@
         </div>
     </form>
 </div>
-<script>
+<script data-th-inline="javascript">
     layui.use(['dropdown','febs', 'form', 'laydate', 'validate'], function () {
         var $ = layui.$,
             febs = layui.febs,
             laydate = layui.laydate,
             layer = layui.layer,
             form = layui.form,
-            dropdown = layui.dropdown,
-            $view = $('#assets-add'),
+            assets = [[${assets}]],
             validate = layui.validate;
 
         form.verify(validate);
         form.render();
-        /*initUserValue();*/
+
         laydate.render({
             elem: '#user-createTime',
             range: false,
             trigger: 'click'
         });
+
+        initAssertsValue();
         form.on('submit()', function (data) {
-            febs.post(ctx + 'personalAssets/add', data.field, function () {
+            febs.post(ctx + 'personalAssets/modify', data.field, function () {
                 layer.closeAll();
-                febs.alert.success('添加成功!');
+                febs.alert.success('修改成功!');
                 $('#fbs_personalAssets').find('#query').click();
             });
             return false;
         });
-        function initUserValue() {
+        function initAssertsValue() {
             form.val("assets-form", {
+                "id":assets.id,
                 "date": assets.date,
                 "totalMoney": assets.totalMoney,
                 "gongJiJing": assets.gongJiJing,

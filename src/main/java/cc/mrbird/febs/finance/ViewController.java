@@ -41,25 +41,57 @@ public class ViewController extends BaseController {
     private PersonalAssetsMapper personalAssetsMapper;
 
     @GetMapping("personalAssets")
-    public String online() {
+    public String personalAssets() {
         return FebsUtil.view("finance/personalAssets");
     }
 
-    @GetMapping("assetsAdd/{id}")
-    public String assetsAdd(@PathVariable String id, Model model) {
-        resolveUserModel(id, model, true);
+    @GetMapping("assetsAnalysis")
+    public String assetsAnalysis() {
+        return FebsUtil.view("finance/assetsAnalysis");
+    }
+
+    @GetMapping("assetsAdd")
+    public String assetsAdd() {
         return FebsUtil.view("finance/assetsAdd");
     }
 
-    private void resolveUserModel(String id, Model model, Boolean transform) {
-        if("-1".equals(id)){
-            return;
-        }
+    @GetMapping("assetsDetail/{id}")
+    public String assetsDetail(@PathVariable Integer id,Model model) {
+        resolveAssetsModel(id, model);
+        return FebsUtil.view("finance/assetsDetail");
+    }
+
+    @GetMapping("assetsModify/{id}")
+    public String assetsModify(@PathVariable Integer id,Model model) {
+        modifyAssetsModel(id, model);
+        return FebsUtil.view("finance/assetsModify");
+    }
+
+    private void modifyAssetsModel(Integer id, Model model) {
         QueryWrapper<PersonalAssets> queryWrapper = new QueryWrapper<>();
-        if (StringUtils.isNotBlank(id)) {
+        if (id!=null) {
             queryWrapper.lambda().eq(PersonalAssets::getId, id);
         }
         List<PersonalAssets> list=personalAssetsMapper.selectList(queryWrapper);
         PersonalAssets assets=list.get(0);
+        model.addAttribute("assets",assets);
+    }
+
+
+    private void resolveAssetsModel(Integer id, Model model) {
+        QueryWrapper<PersonalAssets> queryWrapper = new QueryWrapper<>();
+        if (id!=null) {
+            queryWrapper.lambda().eq(PersonalAssets::getId, id);
+        }
+        List<PersonalAssets> list=personalAssetsMapper.selectList(queryWrapper);
+        PersonalAssets assets=list.get(0);
+        assets.setTotalMoney(assets.getTotalMoney()/10000);
+        assets.setGongJiJing(assets.getGongJiJing()/10000);
+        assets.setHairdresserStock(assets.getHairdresserStock()/10000);
+        assets.setArrears(assets.getArrears()/10000);
+        assets.setConsume(assets.getConsume()/10000);
+        assets.setHairdresserBonus(assets.getHairdresserBonus()/10000);
+        assets.setCarLoan(assets.getCarLoan()/10000);
+        model.addAttribute("assets",assets);
     }
 }

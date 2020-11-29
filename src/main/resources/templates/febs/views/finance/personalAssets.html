@@ -66,7 +66,7 @@
             elem: $view.find('.action-more'),
             click: function (name, elem, event) {
                 if (name === 'add') {
-                    febs.modal.open('资产', 'finance/assetsAdd/-1', {
+                    febs.modal.open('资产', 'finance/assetsAdd', {
                         btn: ['提交', '重置'],
                         area: $(window).width() <= 750 ? '95%' : '50%',
                         offset: '30px',
@@ -90,22 +90,22 @@
             var data = obj.data,
                 layEvent = obj.event;
             if (layEvent === 'detail') {
-                febs.modal.view('资产详细信息', 'finance/assetsAdd/' + data.id, {
+                febs.modal.view('资产详细信息', 'finance/assetsDetail/' + data.id, {
                     area: $(window).width() <= 750 ? '95%' : '660px'
                 });
             }
             if (layEvent === 'del') {
                 febs.modal.confirm('删除资产', '确定删除该资产？', function () {
-                    deleteUsers(data.id);
+                    deleteAsset(data.id);
                 });
             }
             if (layEvent === 'edit') {
-                febs.modal.open('修改资产', 'finance/assetsAdd/' + data.id, {
+                febs.modal.open('修改资产', 'finance/assetsModify/' + data.id, {
                     area: $(window).width() <= 750 ? '90%' : '50%',
                     offset: '30px',
                     btn: ['提交', '取消'],
                     yes: function (index, layero) {
-                        $('#user-update').find('#submit').trigger('click');
+                        $('#assets-modify').find('#submit').trigger('click');
                     },
                     btn2: function () {
                         layer.closeAll();
@@ -136,6 +136,13 @@
                     {title: '操作', toolbar: '#assets-option', minWidth: 140}
                 ]],
                 limit:5
+            });
+        }
+
+        function deleteAsset(id) {
+            febs.get(ctx + 'personalAssets/delete/' + id, null, function () {
+                febs.alert.success('删除成功');
+                $query.click();
             });
         }
 
