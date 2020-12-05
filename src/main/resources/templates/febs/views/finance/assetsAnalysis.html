@@ -55,6 +55,7 @@
 
         form.on('select(assetsItem)', function (itemType) {
                 handleSuccess(itemType.value);
+            handleSuccess(itemType.value);
         });
 
         $("#assetsItem").val("totalMoney");
@@ -69,6 +70,8 @@
                     days.push(item.date);
                     moneyCount.push(item.value);
                 });
+                days=JSON.parse(JSON.stringify(days));
+                moneyCount=JSON.parse(JSON.stringify(moneyCount));
 
                 var basicLineChartOptions = {
                     chart: {

@@ -18,6 +18,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -37,6 +38,7 @@ import java.util.Map;
  * @Date: 2020/11/19 19:08
  * @Description:
  */
+@Slf4j
 @RestController
 @RequestMapping("personalAssets")
 public class personalAssetsController  extends BaseController {
@@ -104,6 +106,7 @@ public class personalAssetsController  extends BaseController {
     @GetMapping("dates/{itemType}")
     public FebsResponse dates(@NotBlank(message = "{required}") @PathVariable String itemType) throws Exception {
         Map<String, Object> dataTable =new HashMap();
+        log.info("itemType:"+itemType);
         QueryWrapper<PersonalAssets> queryWrapper = new QueryWrapper<>();
         queryWrapper.orderByAsc("date");
         List<PersonalAssets> result = personalAssetsMapper.selectList(queryWrapper);
@@ -115,6 +118,7 @@ public class personalAssetsController  extends BaseController {
                 Dates date = new Dates();
                 date.setDate(x.getDate());
                 date.setValue((double) fieldSet.get(x)/10000);
+                log.info("value:"+date.getValue());
                 dates.add(date);
             }
             catch (IllegalAccessException e){
