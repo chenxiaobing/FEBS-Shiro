@@ -10,7 +10,7 @@
         display: inline-block
     }
 
-    #febs-index .welcome-info-wrapper .user-header {
+    #febs-index .welcome-info-wrapper .user-header  {
         display: inline-block;
         vertical-align: middle
     }
@@ -21,7 +21,7 @@
         border-radius: 50%
     }
 
-    #febs-index .welcome-info-wrapper .user-info {
+    #febs-index .welcome-info-wrapper .user-info  {
         display: inline-block;
         vertical-align: middle
     }
@@ -123,6 +123,48 @@
         </div>
         <div class="layui-col-md12 layui-col-sm12 layui-col-xs12">
             <div class="layui-card">
+                <div class="layui-card-body layui-anim layui-anim-fadein">
+                    <div class="layui-row welcome-info">
+                        <div class="layui-col-md12 layui-col-sm12 layui-col-xs12">
+                            <div class="layui-row welcome-info-wrapper">
+                                <div class="user-header">
+                                    <!--<img alt="头像" id="user-avatar" data-th-src="@{febs/images/avatar/empty.jpg}">-->
+                                </div>
+                                <div class="user-info">
+                                    <div class="layui-row">
+                                        <div class="user-login-info">
+                                            <span id="date"></span>
+                                        </div>
+                                        <div class="random-message">
+                                            <span>总资产(万元)</span>
+                                        </div>
+                                        <div class="random-message">
+                                            <span><a id="totalMoney">0</a></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="user-header welcome-info">
+                                    <div>
+                                        <span>公积金 <a id="gongJijing">0</a></span>
+                                    </div>
+                                    <div>
+                                        <span>理发店分红 <a id="fenHong">0</a></span>
+                                    </div>
+                                    <div>
+                                        <span>消费 <a id="xiaoFei">0</a></span>
+                                    </div>
+                                    <div>
+                                        <span>星星欠款 <a id="qianKuan">0</a></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="layui-col-md12 layui-col-sm12 layui-col-xs12">
+            <div class="layui-card">
                 <div class="layui-card-body">
                     <div id="chart" style="height: 350px"></div>
                 </div>
@@ -164,6 +206,12 @@
                 .find('#user-role').text(currentUser.roleName ? currentUser.roleName : '暂无角色').end()
                 .find('#last-login-time').text(currentUser.lastLoginTime ? currentUser.lastLoginTime : '第一次访问系统').end()
                 .find('#welcome-message').html(welcomeMessage).end()
+                .find('#date').html(data.assets.date).end()
+                .find('#totalMoney').html(data.assets.totalMoney).end()
+                .find('#gongJijing').html(data.assets.gongJiJing).end()
+                .find('#fenHong').html(data.assets.hairdresserBonus).end()
+                .find('#xiaoFei').html(data.assets.consume).end()
+                .find('#qianKuan').html(data.assets.arrears).end()
                 .find('#user-avatar').attr('src', ctx + "febs/images/avatar/" + currentUser.avatar);
 
             var currentTime = new Date().getTime();

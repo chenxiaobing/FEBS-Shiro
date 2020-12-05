@@ -7,12 +7,16 @@ import cc.mrbird.febs.common.exception.FebsException;
 import cc.mrbird.febs.common.properties.FebsProperties;
 import cc.mrbird.febs.common.service.ValidateCodeService;
 import cc.mrbird.febs.common.utils.Md5Util;
+import cc.mrbird.febs.finance.PersonalAssets;
+import cc.mrbird.febs.finance.mapper.PersonalAssetsMapper;
 import cc.mrbird.febs.monitor.entity.LoginLog;
 import cc.mrbird.febs.monitor.service.ILoginLogService;
 import cc.mrbird.febs.system.entity.User;
 import cc.mrbird.febs.system.service.IUserService;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import lombok.RequiredArgsConstructor;
 import org.apache.shiro.authc.UsernamePasswordToken;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -40,6 +44,8 @@ public class LoginController extends BaseController {
     private final ValidateCodeService validateCodeService;
     private final ILoginLogService loginLogService;
     private final FebsProperties properties;
+    @Autowired
+    private PersonalAssetsMapper personalAssetsMapper;
 
     @PostMapping("login")
     @Limit(key = "login", period = 60, count = 10, name = "登录接口", prefix = "limit")
@@ -92,6 +98,20 @@ public class LoginController extends BaseController {
         param.setUsername(username);
         List<Map<String, Object>> lastSevenUserVisitCount = this.loginLogService.findLastSevenDaysVisitCount(param);
         data.put("lastSevenUserVisitCount", lastSevenUserVisitCount);
+
+        QueryWrapper<PersonalAssets> queryWrapper = new QueryWrapper<>();
+        queryWrapper.orderByDesc("date");
+        List<PersonalAssets> list = personalAssetsMapper.selectList(queryWrapper);
+        list.forEach(x->{
+            x.setTotalMoney(x.getTotalMoney()/10000);
+            x.setGongJiJing(x.getGongJiJing()/10000);
+            x.setHairdresserStock(x.getHairdresserStock()/10000);
+            x.setArrears(x.getArrears()/10000);
+            x.setConsume(x.getConsume()/10000);
+            x.setHairdresserBonus(x.getHairdresserBonus()/10000);
+            x.setCarLoan(x.getCarLoan()/10000);
+        });
+        data.put("assets", list.get(0));
         return new FebsResponse().success().data(data);
     }
 
