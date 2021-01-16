@@ -7,6 +7,7 @@ import cc.mrbird.febs.common.exception.FebsException;
 import cc.mrbird.febs.common.properties.FebsProperties;
 import cc.mrbird.febs.common.service.ValidateCodeService;
 import cc.mrbird.febs.common.utils.Md5Util;
+import cc.mrbird.febs.finance.PersonalAssetDTO;
 import cc.mrbird.febs.finance.PersonalAssets;
 import cc.mrbird.febs.finance.mapper.PersonalAssetsMapper;
 import cc.mrbird.febs.monitor.entity.LoginLog;
@@ -102,16 +103,19 @@ public class LoginController extends BaseController {
         QueryWrapper<PersonalAssets> queryWrapper = new QueryWrapper<>();
         queryWrapper.orderByDesc("date");
         List<PersonalAssets> list = personalAssetsMapper.selectList(queryWrapper);
-        list.forEach(x->{
-            x.setTotalMoney(x.getTotalMoney()/10000);
-            x.setGongJiJing(x.getGongJiJing()/10000);
-            x.setHairdresserStock(x.getHairdresserStock()/10000);
-            x.setArrears(x.getArrears()/10000);
-            x.setConsume(x.getConsume()/10000);
-            x.setHairdresserBonus(x.getHairdresserBonus()/10000);
-            x.setCarLoan(x.getCarLoan()/10000);
-        });
-        data.put("assets", list.get(0));
+        PersonalAssetDTO dto=new PersonalAssetDTO();
+        PersonalAssets x=list.get(0);
+
+        dto.setSumMoney((x.getTotalMoney()+x.getGongJiJing()+x.getArrears())/10000);
+        dto.setTotalMoney(x.getTotalMoney()/10000);
+        dto.setGongJiJing(x.getGongJiJing()/10000);
+        dto.setHairdresserStock(x.getHairdresserStock()/10000);
+        dto.setArrears(x.getArrears()/10000);
+        dto.setConsume(x.getConsume()/10000);
+        dto.setHairdresserBonus(x.getHairdresserBonus()/10000);
+        dto.setCarLoan(x.getCarLoan()/10000);
+
+        data.put("assets", dto);
         return new FebsResponse().success().data(data);
     }
 
